@@ -1,1 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0e14">
+<title>Market Cycle Trader</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAE50lEQVR4nO3dTW4TQRCG4Q5iFykrpCxyi5yKMyBlhcQZcqrcgkVuwcLCijyeH/vrqq6qfp8dCMZm+nX1jG3g4fHpRwPu9W30E0BuBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyfexD//69jn2CdTw8ft51EM/+P+9MKKx41+Sa0Ck48atJKeASMefT0MeAVHPQNYZmQe0Xc/Aq78ydl+fpifZMKCNPxjdGFk753Yn3Cog/z8Jzq6efKMz7/pGIvX4uHqeja5ETSbQ8rmSzhAOC9F/AlFPHMsz330OdQ6IeqKxbogPUyHpGRDjJybTIWQ4gagnDru16BYQn1fk0mu9rCYQ4yeaCm8koh4CgqRPQBcbKvtXTBfr0uUyiAkECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQU0cv7n9FP4SgCCudUT5aGCCiWr92kaIiAAlkWE78hAooueEMEFMVGKJEbIqAQthP5+/OX2zO5FQGNl7eeRkDDpa6nEdBYkS9uDiKguOKPn0ZAA2XfvE4IaIwa9TQCGqJMPY2A/FWqpxGQswK3XRcIyM9uPenGTyOgODLW0wjITbFLnzMC8lC1nkZADgrX0wjIWu162vD/tdnZ1+V0WLx6N+1LswS09nXjgTOgwPhpk2xhQ74tWn7zOpkioG0v73+6ZzRJPW2GgA7G0bGheepp5QO6KYsuo2iqelr5gO6gNDTDbdeFygHdvZz3jaKSn5XuKhuQ9WZ0q5L1tKrvA22s/Xkhj/Rx/L2i2S59zspOoF3HF3V3R5u2nlYyoCPj5/zDmzK69eGWj1hPtYCO17P781cPfnH8yetp9QJas72W942iCW/al0pdRIsremro+MX1kaOVV2cC3bF56b/Y9CAp1AlozR1redOO1uUR8yoSkMXlyH0dTFVPqxFQr83r6m/33/5yqRDQml7LOWEWx6UPyOde+sgomrOz3AHZbV63HnPOelrqgJzrOR95efBp62nF3kh0M3MxF7JOoCHjB0spA6KeOFIGtIZ6/OULiM/AQ0kWEJtXNMkCWkM9o2QKiM0roDQBsXnFlCagNdQzVo6A2LzCShAQm1dk0QOinuCiB4TgQgfE+IkvbkDUk0LcgNZQTyhBA+K+PYugAen/EAJ8BA2oXfv2MfUEFDegE6IJLnpA7X9DlBRTgoAa9QSWIyCERUCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkJgG9vn1aHBYii3XpE9DH7+cux4GnLqvGFgYJAc3C6LqiW0AX85DLoOB6XXUwgSAxDIghFIfdWvQMaDkVaSiC5Sp0vGvuPIG4n4/GtJ7mcA3EEKrt4fHpR/eDWlePI66+dLsvhElAzevZY43b+bfawq4+V7YzH56vXqsJdLJWDKPIwsbr0+6E2wbU9qYOJel257rpSTYPqLFzDWX9EvUIqNHQCD7T3SmgEzJy43Zt4BrQCRnZ8b+mHBDQV8TUxcB7kcEBITu+DwQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyT+sd50PbCsGcQAAAABJRU5ErkJggg==">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAE50lEQVR4nO3dTW4TQRCG4Q5iFykrpCxyi5yKMyBlhcQZcqrcgkVuwcLCijyeH/vrqq6qfp8dCMZm+nX1jG3g4fHpRwPu9W30E0BuBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyfexD//69jn2CdTw8ft51EM/+P+9MKKx41+Sa0Ck48atJKeASMefT0MeAVHPQNYZmQe0Xc/Aq78ydl+fpifZMKCNPxjdGFk753Yn3Cog/z8Jzq6efKMz7/pGIvX4uHqeja5ETSbQ8rmSzhAOC9F/AlFPHMsz330OdQ6IeqKxbogPUyHpGRDjJybTIWQ4gagnDru16BYQn1fk0mu9rCYQ4yeaCm8koh4CgqRPQBcbKvtXTBfr0uUyiAkECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQU0cv7n9FP4SgCCudUT5aGCCiWr92kaIiAAlkWE78hAooueEMEFMVGKJEbIqAQthP5+/OX2zO5FQGNl7eeRkDDpa6nEdBYkS9uDiKguOKPn0ZAA2XfvE4IaIwa9TQCGqJMPY2A/FWqpxGQswK3XRcIyM9uPenGTyOgODLW0wjITbFLnzMC8lC1nkZADgrX0wjIWu162vD/tdnZ1+V0WLx6N+1LswS09nXjgTOgwPhpk2xhQ74tWn7zOpkioG0v73+6ZzRJPW2GgA7G0bGheepp5QO6KYsuo2iqelr5gO6gNDTDbdeFygHdvZz3jaKSn5XuKhuQ9WZ0q5L1tKrvA22s/Xkhj/Rx/L2i2S59zspOoF3HF3V3R5u2nlYyoCPj5/zDmzK69eGWj1hPtYCO17P781cPfnH8yetp9QJas72W942iCW/al0pdRIsremro+MX1kaOVV2cC3bF56b/Y9CAp1AlozR1redOO1uUR8yoSkMXlyH0dTFVPqxFQr83r6m/33/5yqRDQml7LOWEWx6UPyOde+sgomrOz3AHZbV63HnPOelrqgJzrOR95efBp62nF3kh0M3MxF7JOoCHjB0spA6KeOFIGtIZ6/OULiM/AQ0kWEJtXNMkCWkM9o2QKiM0roDQBsXnFlCagNdQzVo6A2LzCShAQm1dk0QOinuCiB4TgQgfE+IkvbkDUk0LcgNZQTyhBA+K+PYugAen/EAJ8BA2oXfv2MfUEFDegE6IJLnpA7X9DlBRTgoAa9QSWIyCERUCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkJgG9vn1aHBYii3XpE9DH7+cux4GnLqvGFgYJAc3C6LqiW0AX85DLoOB6XXUwgSAxDIghFIfdWvQMaDkVaSiC5Sp0vGvuPIG4n4/GtJ7mcA3EEKrt4fHpR/eDWlePI66+dLsvhElAzevZY43b+bfawq4+V7YzH56vXqsJdLJWDKPIwsbr0+6E2wbU9qYOJel257rpSTYPqLFzDWX9EvUIqNHQCD7T3SmgEzJy43Zt4BrQCRnZ8b+mHBDQV8TUxcB7kcEBITu+DwQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyT+sd50PbCsGcQAAAABJRU5ErkJggg==">
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#12151f; --border:#232838; --border2:#1d2230;
+    --text:#e6e9f0; --muted:#7a8199; --dim:#5d6472;
+    --blue:#3d8bfd; --green:#26a69a; --red:#ef5350; --amber:#f0b429;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;
+    -webkit-tap-highlight-color:transparent; padding-bottom:env(safe-area-inset-bottom);}
+  header{position:sticky;top:0;background:rgba(11,14,20,.95);backdrop-filter:blur(6px);
+    border-bottom:1px solid #181c27;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:10;
+    padding-top:calc(12px + env(safe-area-inset-top));}
+  header h1{font-size:14px;margin:0;font-weight:700;}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.03em;}
+  .b-bullish{color:var(--green);border-color:#26a69a66;background:#26a69a1a;}
+  .b-bearish{color:var(--red);border-color:#ef535066;background:#ef53501a;}
+  .b-ranging,.b-unclear{color:var(--amber);border-color:#f0b42966;background:#f0b4291a;}
+  main{padding:14px;max-width:720px;margin:0 auto;}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+  .panel h3{margin:0 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#cdd3e0;}
+  .panel .sub{font-size:11px;color:var(--dim);margin:0 0 10px;}
+  .row{display:flex;gap:8px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  label{display:block;font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.03em;margin-bottom:3px;}
+  input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    padding:8px;color:var(--text);font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  select,textarea{font-family:inherit;}
+  .field{margin-bottom:8px;}
+  button{cursor:pointer;border:none;border-radius:6px;font-weight:600;font-size:13px;}
+  .btn-primary{background:var(--blue);color:#0b0e14;padding:10px 16px;}
+  .btn-ghost{background:transparent;color:var(--blue);padding:6px 0;font-size:12px;}
+  .candle-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px;}
+  .del{background:none;color:var(--dim);font-size:16px;padding:6px;}
+  nav{position:fixed;bottom:0;left:0;right:0;background:#0d0f17;border-top:1px solid #181c27;
+    display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:10;}
+  nav button{flex:1;background:none;color:var(--dim);padding:10px 2px 8px;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  nav button.active{color:var(--blue);}
+  nav .ic{font-size:16px;}
+  .tab{display:none;}
+  .tab.active{display:block;}
+  .pill{display:inline-block;border:1px solid;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;}
+  .p-idle{color:var(--dim);border-color:#5d647266;background:#5d64721a;}
+  .p-waiting{color:var(--amber);border-color:#f0b42966;background:#f0b4291a;}
+  .p-valid,.p-expansion{color:var(--green);border-color:#26a69a66;background:#26a69a1a;}
+  .p-invalid{color:var(--red);border-color:#ef535066;background:#ef53501a;}
+  .p-in-zone{color:var(--blue);border-color:#3d8bfd66;background:#3d8bfd1a;}
+  .check{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border2);border-radius:8px;padding:10px;margin-bottom:8px;}
+  .check.on{border-color:#26a69a80;background:#26a69a0d;}
+  .check input{width:auto;accent-color:var(--green);margin-top:2px;}
+  .check .t{font-size:13px;font-weight:600;}
+  .check .d{font-size:11px;color:var(--muted);}
+  table{width:100%;border-collapse:collapse;font-size:11px;}
+  th{color:var(--dim);text-align:left;padding:6px 4px;border-bottom:1px solid var(--border2);font-weight:500;}
+  td{padding:6px 4px;border-bottom:1px solid #151926;font-family:ui-monospace,monospace;}
+  .stat{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px;text-align:center;}
+  .stat .v{font-size:17px;font-weight:700;font-family:ui-monospace,monospace;}
+  .stat .l{font-size:9px;color:var(--dim);text-transform:uppercase;margin-top:2px;}
+  .stats4{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+  .cycle{display:flex;flex-direction:column;gap:8px;}
+  .step{border:1px solid var(--border2);border-radius:8px;padding:10px;}
+  .step.on{border-color:var(--stepcolor);background:color-mix(in srgb, var(--stepcolor) 10%, transparent);}
+  .num{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;background:#1d2230;color:#5d6472;margin-right:6px;}
+  .step.on .num{background:var(--stepcolor);color:#0b0e14;}
+  .warn{color:var(--amber);font-size:11px;margin-top:6px;}
+  .ok{color:var(--green);font-size:11px;margin-top:6px;}
+  .err{color:var(--red);font-size:11px;margin-top:6px;}
+</style>
+</head>
+<body>
 
+<header>
+  <h1>Market Cycle Trader</h1>
+  <span class="badge" id="headerBias">—</span>
+</header>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <section class="tab active" id="tab-dashboard">
+    <div class="panel"><h3>30M Bias</h3><span class="badge" id="dashBias"></span><p class="sub" id="dashBiasReason"></p></div>
+    <div class="panel"><h3>Level 2 Zone</h3><div id="dashZone" class="sub"></div></div>
+    <div class="panel"><h3>Level 3 / Entry Status</h3><div id="dashStatus" style="display:flex;gap:8px;flex-wrap:wrap;"></div></div>
+    <div class="panel">
+      <h3>Three-Level Market Cycle</h3>
+      <div class="cycle">
+        <div class="step" id="stepL1" style="--stepcolor:#3d8bfd;"><div><span class="num">1</span><b style="font-size:13px;">Initial Push</b></div><div class="sub" style="margin:4px 0 0;">First directional move on the 30M timeframe.</div></div>
+        <div class="step" id="stepL2" style="--stepcolor:#f0b429;"><div><span class="num">2</span><b style="font-size:13px;">Decision Zone</b></div><div class="sub" style="margin:4px 0 0;">Most important area — where confirmation is required.</div></div>
+        <div class="step" id="stepL3" style="--stepcolor:#26a69a;"><div><span class="num">3</span><b style="font-size:13px;">Expansion</b></div><div class="sub" style="margin:4px 0 0;">Confirmed breakout continuation.</div></div>
+      </div>
+    </div>
+    <div class="panel"><h3>Quick Stats</h3><div class="stats4" id="quickStats"></div></div>
+  </section>
+
+  <!-- CHART -->
+  <section class="tab" id="tab-chart">
+    <div class="panel">
+      <h3>30-Minute Candle Data</h3><p class="sub">Oldest first. Add at least 3 candles.</p>
+      <div id="candleRows"></div>
+      <button class="btn-ghost" onclick="addCandle()">+ Add candle</button>
+      <div style="border-top:1px solid var(--border2);margin-top:10px;padding-top:10px;">
+        <span class="badge" id="chartBias"></span> <span class="sub" id="chartBiasReason"></span>
+      </div>
+    </div>
+    <div class="panel"><h3>Level 1 — Initial Push</h3><div id="level1Out" class="sub"></div></div>
+    <div class="panel">
+      <h3>Level 2 — Decision Zone</h3><p class="sub">Mark manually — this is discretionary.</p>
+      <div class="grid2">
+        <div class="field"><label>Zone Top</label><input id="zoneTop" oninput="recalc()"></div>
+        <div class="field"><label>Zone Bottom</label><input id="zoneBottom" oninput="recalc()"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Level 3 — Expansion Tracking</h3>
+      <div class="field"><label>Current Price</label><input id="currentPrice" oninput="recalc()"></div>
+      <div id="level3Out"></div>
+    </div>
+    <div class="panel">
+      <h3>Support &amp; Resistance</h3>
+      <div class="row" style="margin-bottom:8px;">
+        <div class="field" style="flex:1;"><label>Label</label><input id="srLabel" placeholder="Prev Day High"></div>
+        <div class="field" style="flex:1;"><label>Price</label><input id="srPrice"></div>
+      </div>
+      <button class="btn-primary" onclick="addSr()">Add Level</button>
+      <div id="srList" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="tab" id="tab-checklist">
+    <div class="panel">
+      <h3>1-Minute Entry Confirmation</h3><p class="sub">No trade signal without confirmation.</p>
+      <div class="check" id="c-reachedZone"><input type="checkbox" onchange="toggleConfirm('reachedZone')"><div><div class="t">Price reached the Level 2 zone</div><div class="d" id="zoneDesc"></div></div></div>
+      <div class="check" id="c-engulfing"><input type="checkbox" onchange="toggleConfirm('engulfing')"><div><div class="t">Engulfing candle</div><div class="d">1M candle fully engulfs prior candle's range in bias direction.</div></div></div>
+      <div class="check" id="c-bos"><input type="checkbox" onchange="toggleConfirm('bos')"><div><div class="t">Break of structure (BOS)</div><div class="d">1M structure breaks a recent swing, confirming direction.</div></div></div>
+      <div class="check" id="c-rejection"><input type="checkbox" onchange="toggleConfirm('rejection')"><div><div class="t">Rejection candle</div><div class="d">Long wick rejecting the zone, strong close in bias direction.</div></div></div>
+    </div>
+    <div class="panel"><h3>Result</h3><div id="entryResult"></div></div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section class="tab" id="tab-calculator">
+    <div class="panel">
+      <h3>Trade Inputs</h3>
+      <div class="grid2">
+        <div class="field"><label>Entry Price</label><input id="calcEntry" oninput="recalc()"></div>
+        <div class="field"><label>Stop Loss</label><input id="calcStop" oninput="recalc()"></div>
+        <div class="field"><label>Risk %</label><input id="calcRisk" value="1" oninput="recalc()"></div>
+        <div class="field"><label>Account Balance</label><input id="calcBalance" value="10000" oninput="recalc()"></div>
+      </div>
+    </div>
+    <div class="panel"><h3>Calculated Trade Plan</h3><div id="calcOut" class="sub"></div></div>
+  </section>
+
+  <!-- JOURNAL -->
+  <section class="tab" id="tab-journal">
+    <div class="panel">
+      <h3>New Journal Entry</h3>
+      <div class="grid2">
+        <div class="field"><label>Date</label><input type="date" id="jDate"></div>
+        <div class="field"><label>Pair</label><input id="jPair" placeholder="EUR/USD"></div>
+        <div class="field"><label>Bias</label><select id="jBias"><option value="bullish">Bullish</option><option value="bearish">Bearish</option><option value="ranging">Ranging</option></select></div>
+        <div class="field"><label>Setup Type</label><select id="jSetup"><option>L1 Push Continuation</option><option>L2 Zone Reversal</option><option>L3 Breakout Retest</option><option>Other</option></select></div>
+        <div class="field"><label>Entry</label><input id="jEntry"></div>
+        <div class="field"><label>Stop Loss</label><input id="jStop"></div>
+        <div class="field"><label>Take Profit</label><input id="jTp"></div>
+        <div class="field"><label>Result</label><select id="jResult"><option value="open">Open</option><option value="win">Win</option><option value="loss">Loss</option></select></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="jNotes" rows="2"></textarea></div>
+      <div class="field"><label>Screenshot</label><input type="file" id="jShot" accept="image/*"></div>
+      <button class="btn-primary" onclick="saveJournal()">Save Entry</button>
+    </div>
+    <div class="panel"><h3 id="journalCount">Journal</h3><div style="overflow-x:auto;"><table id="journalTable"><thead><tr><th>Date</th><th>Pair</th><th>Setup</th><th>R:R</th><th>Result</th><th></th></tr></thead><tbody id="journalBody"></tbody></table></div></div>
+  </section>
+
+  <!-- PERFORMANCE -->
+  <section class="tab" id="tab-performance">
+    <div class="stats4" id="perfStats"></div>
+    <div class="panel"><h3>Monthly Performance</h3><div id="monthlyChart"></div></div>
+  </section>
+
+</main>
+
+<nav>
+  <button class="active" data-tab="dashboard" onclick="showTab('dashboard')"><span class="ic">▦</span>Dashboard</button>
+  <button data-tab="chart" onclick="showTab('chart')"><span class="ic">📈</span>Chart</button>
+  <button data-tab="checklist" onclick="showTab('checklist')"><span class="ic">✓</span>Checklist</button>
+  <button data-tab="calculator" onclick="showTab('calculator')"><span class="ic">🧮</span>Risk</button>
+  <button data-tab="journal" onclick="showTab('journal')"><span class="ic">📓</span>Journal</button>
+  <button data-tab="performance" onclick="showTab('performance')"><span class="ic">📊</span>Stats</button>
+</nav>
+
+<script>
+// ---------- state ----------
+const store = {
+  candles: JSON.parse(localStorage.getItem('mct_candles') || '[{},{},{},{}]'),
+  zoneTop: localStorage.getItem('mct_zoneTop') || '',
+  zoneBottom: localStorage.getItem('mct_zoneBottom') || '',
+  currentPrice: localStorage.getItem('mct_currentPrice') || '',
+  confirm: JSON.parse(localStorage.getItem('mct_confirm') || '{}'),
+  sr: JSON.parse(localStorage.getItem('mct_sr') || '[]'),
+  journal: JSON.parse(localStorage.getItem('mct_journal') || '[]'),
+};
+function persist(){
+  localStorage.setItem('mct_candles', JSON.stringify(store.candles));
+  localStorage.setItem('mct_zoneTop', document.getElementById('zoneTop').value);
+  localStorage.setItem('mct_zoneBottom', document.getElementById('zoneBottom').value);
+  localStorage.setItem('mct_currentPrice', document.getElementById('currentPrice').value);
+  localStorage.setItem('mct_confirm', JSON.stringify(store.confirm));
+  localStorage.setItem('mct_sr', JSON.stringify(store.sr));
+  localStorage.setItem('mct_journal', JSON.stringify(store.journal));
+}
+function fmt(n){ if(n===''||n===null||n===undefined||isNaN(n)) return '—'; return (+n).toFixed(5).replace(/0+$/,'').replace(/\.$/,''); }
+
+// ---------- tabs ----------
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
+}
+
+// ---------- candles ----------
+function renderCandles(){
+  const wrap = document.getElementById('candleRows');
+  wrap.innerHTML = store.candles.map((c,i)=>`
+    <div class="candle-row">
+      <div><label>#${i+1} Open</label><input value="${c.open||''}" oninput="updateCandle(${i},'open',this.value)"></div>
+      <div><label>High</label><input value="${c.high||''}" oninput="updateCandle(${i},'high',this.value)"></div>
+      <div><label>Low</label><input value="${c.low||''}" oninput="updateCandle(${i},'low',this.value)"></div>
+      <div><label>Close</label><input value="${c.close||''}" oninput="updateCandle(${i},'close',this.value)"></div>
+      <button class="del" onclick="removeCandle(${i})">✕</button>
+    </div>`).join('');
+}
+function updateCandle(i,field,v){ store.candles[i][field]=v; recalc(); }
+function addCandle(){ store.candles.push({}); renderCandles(); recalc(); }
+function removeCandle(i){ store.candles.splice(i,1); renderCandles(); recalc(); }
+
+// ---------- strategy logic ----------
+function computeBias(){
+  const valid = store.candles.filter(c=>c.high && c.low);
+  if(valid.length<3) return {bias:'unclear',reason:'Enter at least 3 candles of 30M data.'};
+  const highs=valid.map(c=>+c.high), lows=valid.map(c=>+c.low);
+  let hh=true,hl=true,lh=true,ll=true;
+  for(let i=1;i<highs.length;i++){
+    if(highs[i]<=highs[i-1]) hh=false; if(lows[i]<=lows[i-1]) hl=false;
+    if(highs[i]>=highs[i-1]) lh=false; if(lows[i]>=lows[i-1]) ll=false;
+  }
+  if(hh&&hl) return {bias:'bullish',reason:'Structure shows higher highs and higher lows.'};
+  if(lh&&ll) return {bias:'bearish',reason:'Structure shows lower highs and lower lows.'};
+  return {bias:'ranging',reason:'No consistent HH/HL or LH/LL sequence yet.'};
+}
+function detectLevel1(bias){
+  const valid = store.candles.filter(c=>c.high && c.low);
+  if(valid.length<2||bias==='unclear') return null;
+  const highs=valid.map(c=>+c.high), lows=valid.map(c=>+c.low);
+  if(bias==='bullish') return {from:Math.min(...lows), to:Math.max(...highs)};
+  if(bias==='bearish') return {from:Math.max(...highs), to:Math.min(...lows)};
+  return null;
+}
+function level3Status(bias){
+  const p=+document.getElementById('currentPrice').value, t=+document.getElementById('zoneTop').value, b=+document.getElementById('zoneBottom').value;
+  if(isNaN(p)||isNaN(t)||isNaN(b)||!document.getElementById('currentPrice').value) return 'waiting';
+  if(bias==='bullish'&&p>t) return 'expansion';
+  if(bias==='bearish'&&p<b) return 'expansion';
+  if(p<=t&&p>=b) return 'in-zone';
+  return 'waiting';
+}
+function entryStatus(l3){
+  const c=store.confirm; const any=c.engulfing||c.bos||c.rejection;
+  if(l3==='expansion'&&!any) return 'invalid';
+  if(c.reachedZone&&any) return 'valid';
+  if(c.reachedZone&&!any) return 'waiting';
+  return 'idle';
+}
+function toggleConfirm(key){
+  store.confirm[key]=!store.confirm[key];
+  document.getElementById('c-'+key).classList.toggle('on', !!store.confirm[key]);
+  document.getElementById('c-'+key).querySelector('input').checked = !!store.confirm[key];
+  recalc();
+}
+
+// ---------- render ----------
+const biasLabel = {bullish:'BULLISH',bearish:'BEARISH',ranging:'RANGING',unclear:'NEED DATA'};
+const biasClass = {bullish:'b-bullish',bearish:'b-bearish',ranging:'b-ranging',unclear:'b-unclear'};
+
+function recalc(){
+  const {bias,reason} = computeBias();
+  const l1 = detectLevel1(bias);
+  const l3 = level3Status(bias);
+  const es = entryStatus(l3);
+
+  // header + dashboard bias
+  [document.getElementById('headerBias'), document.getElementById('dashBias'), document.getElementById('chartBias')].forEach(el=>{
+    el.className='badge '+biasClass[bias]; el.textContent=biasLabel[bias];
+  });
+  document.getElementById('dashBiasReason').textContent = reason;
+  document.getElementById('chartBiasReason').textContent = reason;
+
+  // level 1
+  document.getElementById('level1Out').innerHTML = l1
+    ? `From: <b style="color:#e6e9f0">${fmt(l1.from)}</b> &nbsp; To: <b style="color:#e6e9f0">${fmt(l1.to)}</b> &nbsp; Range: <b style="color:#e6e9f0">${fmt(Math.abs(l1.to-l1.from))}</b>`
+    : 'Add candle data with a clear bias to detect the initial push.';
+
+  // level 2 / dashboard zone
+  const zt=document.getElementById('zoneTop').value, zb=document.getElementById('zoneBottom').value;
+  document.getElementById('dashZone').innerHTML = (zt&&zb) ? `Top: <b style="color:#e6e9f0">${fmt(zt)}</b> · Bottom: <b style="color:#e6e9f0">${fmt(zb)}</b>` : 'Mark a decision zone in Chart Analysis.';
+
+  // level 3
+  const l3Labels={waiting:'Waiting',['in-zone']:'Price in Zone',expansion:'Breakout / Expansion'};
+  document.getElementById('level3Out').innerHTML = `<span class="pill p-${l3}">${l3Labels[l3]}</span>`;
+
+  // dashboard status pills
+  const esLabels={idle:'No Signal',waiting:'Awaiting Confirmation',valid:'Entry Valid',invalid:'Setup Invalid'};
+  document.getElementById('dashStatus').innerHTML = `<span class="pill p-${l3}">${l3Labels[l3]}</span><span class="pill p-${es}">${esLabels[es]}</span>`;
+
+  // cycle steps
+  document.getElementById('stepL1').classList.toggle('on', bias==='bullish'||bias==='bearish');
+  document.getElementById('stepL2').classList.toggle('on', bias==='bullish'||bias==='bearish');
+  document.getElementById('stepL3').classList.toggle('on', l3==='expansion');
+
+  // checklist
+  document.getElementById('zoneDesc').textContent = (zt&&zb) ? `Zone: ${fmt(zb)} – ${fmt(zt)}` : 'Set the zone in Chart Analysis first.';
+  const esResult = document.getElementById('entryResult');
+  let extra='';
+  if(es==='invalid') extra = `<div class="err">✕ Price broke the zone without confirmation. Do not enter — wait for the next setup.</div>`;
+  if(es==='valid') extra = `<div class="ok">✓ Confirmation present in the ${bias} direction. Move to the Risk Calculator.</div>`;
+  esResult.innerHTML = `<span class="pill p-${es}">${{idle:'No signal yet',waiting:'In zone — awaiting confirmation',valid:'ENTRY VALID',invalid:'SETUP INVALID'}[es]}</span>${extra}`;
+
+  // risk calculator
+  const entry=+document.getElementById('calcEntry').value, stop=+document.getElementById('calcStop').value;
+  const riskPct=+document.getElementById('calcRisk').value, balance=+document.getElementById('calcBalance').value;
+  const calcOut = document.getElementById('calcOut');
+  if(document.getElementById('calcEntry').value && document.getElementById('calcStop').value && entry!==stop && !isNaN(entry) && !isNaN(stop)){
+    const dir = entry>stop?1:-1;
+    const riskAmount = balance*(riskPct/100);
+    const stopDist = Math.abs(entry-stop);
+    const posSize = riskAmount/stopDist;
+    const tp3 = entry+dir*stopDist*3, tp4 = entry+dir*stopDist*4;
+    calcOut.innerHTML = `
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1d2230;padding:5px 0;"><span>Direction</span><b style="color:#e6e9f0">${dir===1?'Long':'Short'}</b></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1d2230;padding:5px 0;"><span>Risk Amount</span><b style="color:#e6e9f0">${riskAmount.toFixed(2)}</b></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1d2230;padding:5px 0;"><span>Stop Distance</span><b style="color:#e6e9f0">${fmt(stopDist)}</b></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1d2230;padding:5px 0;"><span>Position Size (units)</span><b style="color:#e6e9f0">${posSize.toFixed(2)}</b></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1d2230;padding:5px 0;"><span>Take Profit (1:3)</span><b style="color:#26a69a">${fmt(tp3)}</b></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Take Profit (1:4)</span><b style="color:#26a69a">${fmt(tp4)}</b></div>`;
+  } else {
+    calcOut.textContent = 'Enter entry, stop loss, risk % and balance to calculate.';
+  }
+
+  // sr list
+  document.getElementById('srList').innerHTML = store.sr.length ? store.sr.map((s,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;background:#0b0e14;border:1px solid #1d2230;border-radius:6px;padding:6px 10px;margin-bottom:6px;">
+      <span style="font-size:12px;">${s.label||'Level'}</span><span style="font-family:ui-monospace,monospace;font-size:12px;">${fmt(s.price)}</span>
+      <button class="del" onclick="removeSr(${i})">✕</button>
+    </div>`).join('') : '<p class="sub">No levels yet.</p>';
+
+  // quick stats
+  const st = computeStats();
+  document.getElementById('quickStats').innerHTML = `
+    <div class="stat"><div class="v">${st.total}</div><div class="l">Trades</div></div>
+    <div class="stat"><div class="v">${st.winRate}%</div><div class="l">Win Rate</div></div>
+    <div class="stat"><div class="v">${st.avgRR}</div><div class="l">Avg R:R</div></div>
+    <div class="stat"><div class="v" style="font-size:11px;">${st.bestSetup}</div><div class="l">Best Setup</div></div>`;
+  document.getElementById('perfStats').innerHTML = `
+    <div class="stat"><div class="v">${st.total}</div><div class="l">Total Trades</div></div>
+    <div class="stat"><div class="v">${st.winRate}%</div><div class="l">Win Rate</div></div>
+    <div class="stat"><div class="v">${st.lossRate}%</div><div class="l">Loss Rate</div></div>
+    <div class="stat"><div class="v">${st.avgRR}</div><div class="l">Avg R:R</div></div>`;
+  renderMonthly(st.monthly);
+  renderJournalTable();
+
+  persist();
+}
+
+function addSr(){
+  const label=document.getElementById('srLabel').value, price=document.getElementById('srPrice').value;
+  if(!price) return;
+  store.sr.push({label,price});
+  document.getElementById('srLabel').value=''; document.getElementById('srPrice').value='';
+  recalc();
+}
+function removeSr(i){ store.sr.splice(i,1); recalc(); }
+
+// ---------- journal ----------
+function rrOf(entry,stop,tp){
+  entry=+entry;stop=+stop;tp=+tp;
+  if(isNaN(entry)||isNaN(stop)||isNaN(tp)) return null;
+  const risk=Math.abs(entry-stop), reward=Math.abs(tp-entry);
+  if(risk===0) return null;
+  return (reward/risk).toFixed(2);
+}
+function saveJournal(){
+  const pair=document.getElementById('jPair').value, entry=document.getElementById('jEntry').value;
+  if(!pair||!entry) return;
+  const e = {
+    id: Date.now(),
+    date: document.getElementById('jDate').value || new Date().toISOString().slice(0,10),
+    pair, bias: document.getElementById('jBias').value, setupType: document.getElementById('jSetup').value,
+    entry, stop: document.getElementById('jStop').value, tp: document.getElementById('jTp').value,
+    result: document.getElementById('jResult').value, notes: document.getElementById('jNotes').value,
+  };
+  e.rr = rrOf(e.entry,e.stop,e.tp);
+  const file = document.getElementById('jShot').files[0];
+  const finish = ()=>{
+    store.journal.unshift(e);
+    ['jPair','jEntry','jStop','jTp','jNotes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('jShot').value='';
+    recalc();
+  };
+  if(file && file.size < 1_500_000){
+    const reader = new FileReader();
+    reader.onload = ()=>{ e.screenshot = reader.result; finish(); };
+    reader.readAsDataURL(file);
+  } else { finish(); }
+}
+function deleteJournal(id){ store.journal = store.journal.filter(j=>j.id!==id); recalc(); }
+function renderJournalTable(){
+  document.getElementById('journalCount').textContent = `Journal (${store.journal.length})`;
+  document.getElementById('journalBody').innerHTML = store.journal.map(j=>`
+    <tr>
+      <td>${j.date}</td><td>${j.pair}</td><td>${j.setupType}</td><td>${j.rr||'—'}</td>
+      <td style="color:${j.result==='win'?'#26a69a':j.result==='loss'?'#ef5350':'#f0b429'}">${j.result}</td>
+      <td><button class="del" onclick="deleteJournal(${j.id})">✕</button></td>
+    </tr>`).join('');
+}
+function computeStats(){
+  const closed = store.journal.filter(j=>j.result==='win'||j.result==='loss');
+  const wins = closed.filter(j=>j.result==='win'), losses = closed.filter(j=>j.result==='loss');
+  const winRate = closed.length ? (wins.length/closed.length*100).toFixed(1) : '0.0';
+  const lossRate = closed.length ? (losses.length/closed.length*100).toFixed(1) : '0.0';
+  const rrs = store.journal.map(j=>parseFloat(j.rr)).filter(n=>!isNaN(n));
+  const avgRR = rrs.length ? (rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2) : '—';
+  const setupCounts={};
+  store.journal.forEach(j=>{ setupCounts[j.setupType]=setupCounts[j.setupType]||{wins:0,total:0}; setupCounts[j.setupType].total++; if(j.result==='win') setupCounts[j.setupType].wins++; });
+  let bestSetup='—', bestRate=-1;
+  Object.entries(setupCounts).forEach(([k,v])=>{ const rate=v.total?v.wins/v.total:0; if(rate>bestRate&&v.total>=1){bestRate=rate;bestSetup=k;} });
+  const monthly={};
+  store.journal.forEach(j=>{ const m=(j.date||'').slice(0,7); if(!m) return; monthly[m]=monthly[m]||0; if(j.result==='win') monthly[m]++; if(j.result==='loss') monthly[m]--; });
+  const monthlyData = Object.entries(monthly).sort().map(([month,net])=>({month,net}));
+  return { total: store.journal.length, winRate, lossRate, avgRR, bestSetup, monthly: monthlyData };
+}
+function renderMonthly(data){
+  const el = document.getElementById('monthlyChart');
+  if(!data.length){ el.innerHTML='<p class="sub">Log wins/losses in the Journal to see monthly performance.</p>'; return; }
+  const max = Math.max(1, ...data.map(d=>Math.abs(d.net)));
+  el.innerHTML = `<div style="display:flex;align-items:flex-end;gap:8px;height:140px;">` + data.map(d=>`
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">
+      <div style="width:100%;max-width:28px;height:${Math.abs(d.net)/max*100}px;background:${d.net>=0?'#26a69a':'#ef5350'};border-radius:3px 3px 0 0;"></div>
+      <div style="font-size:9px;color:#5d6472;margin-top:4px;">${d.month.slice(5)}</div>
+    </div>`).join('') + `</div>`;
+}
+
+// ---------- init ----------
+document.getElementById('jDate').value = new Date().toISOString().slice(0,10);
+document.getElementById('zoneTop').value = store.zoneTop;
+document.getElementById('zoneBottom').value = store.zoneBottom;
+document.getElementById('currentPrice').value = store.currentPrice;
+Object.keys(store.confirm).forEach(k=>{
+  const el = document.getElementById('c-'+k);
+  if(el && store.confirm[k]){ el.classList.add('on'); el.querySelector('input').checked=true; }
+});
+renderCandles();
+recalc();
+
+// ---------- PWA service worker ----------
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
