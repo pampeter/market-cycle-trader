@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b0e14">
-<title>Market Cycle Trader</title>
+<title>CycleFX Pro</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAE50lEQVR4nO3dTW4TQRCG4Q5iFykrpCxyi5yKMyBlhcQZcqrcgkVuwcLCijyeH/vrqq6qfp8dCMZm+nX1jG3g4fHpRwPu9W30E0BuBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyfexD//69jn2CdTw8ft51EM/+P+9MKKx41+Sa0Ck48atJKeASMefT0MeAVHPQNYZmQe0Xc/Aq78ydl+fpifZMKCNPxjdGFk753Yn3Cog/z8Jzq6efKMz7/pGIvX4uHqeja5ETSbQ8rmSzhAOC9F/AlFPHMsz330OdQ6IeqKxbogPUyHpGRDjJybTIWQ4gagnDru16BYQn1fk0mu9rCYQ4yeaCm8koh4CgqRPQBcbKvtXTBfr0uUyiAkECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQU0cv7n9FP4SgCCudUT5aGCCiWr92kaIiAAlkWE78hAooueEMEFMVGKJEbIqAQthP5+/OX2zO5FQGNl7eeRkDDpa6nEdBYkS9uDiKguOKPn0ZAA2XfvE4IaIwa9TQCGqJMPY2A/FWqpxGQswK3XRcIyM9uPenGTyOgODLW0wjITbFLnzMC8lC1nkZADgrX0wjIWu162vD/tdnZ1+V0WLx6N+1LswS09nXjgTOgwPhpk2xhQ74tWn7zOpkioG0v73+6ZzRJPW2GgA7G0bGheepp5QO6KYsuo2iqelr5gO6gNDTDbdeFygHdvZz3jaKSn5XuKhuQ9WZ0q5L1tKrvA22s/Xkhj/Rx/L2i2S59zspOoF3HF3V3R5u2nlYyoCPj5/zDmzK69eGWj1hPtYCO17P781cPfnH8yetp9QJas72W942iCW/al0pdRIsremro+MX1kaOVV2cC3bF56b/Y9CAp1AlozR1redOO1uUR8yoSkMXlyH0dTFVPqxFQr83r6m/33/5yqRDQml7LOWEWx6UPyOde+sgomrOz3AHZbV63HnPOelrqgJzrOR95efBp62nF3kh0M3MxF7JOoCHjB0spA6KeOFIGtIZ6/OULiM/AQ0kWEJtXNMkCWkM9o2QKiM0roDQBsXnFlCagNdQzVo6A2LzCShAQm1dk0QOinuCiB4TgQgfE+IkvbkDUk0LcgNZQTyhBA+K+PYugAen/EAJ8BA2oXfv2MfUEFDegE6IJLnpA7X9DlBRTgoAa9QSWIyCERUCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkJgG9vn1aHBYii3XpE9DH7+cux4GnLqvGFgYJAc3C6LqiW0AX85DLoOB6XXUwgSAxDIghFIfdWvQMaDkVaSiC5Sp0vGvuPIG4n4/GtJ7mcA3EEKrt4fHpR/eDWlePI66+dLsvhElAzevZY43b+bfawq4+V7YzH56vXqsJdLJWDKPIwsbr0+6E2wbU9qYOJel257rpSTYPqLFzDWX9EvUIqNHQCD7T3SmgEzJy43Zt4BrQCRnZ8b+mHBDQV8TUxcB7kcEBITu+DwQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyT+sd50PbCsGcQAAAABJRU5ErkJggg==">
 <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAE50lEQVR4nO3dTW4TQRCG4Q5iFykrpCxyi5yKMyBlhcQZcqrcgkVuwcLCijyeH/vrqq6qfp8dCMZm+nX1jG3g4fHpRwPu9W30E0BuBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyfexD//69jn2CdTw8ft51EM/+P+9MKKx41+Sa0Ck48atJKeASMefT0MeAVHPQNYZmQe0Xc/Aq78ydl+fpifZMKCNPxjdGFk753Yn3Cog/z8Jzq6efKMz7/pGIvX4uHqeja5ETSbQ8rmSzhAOC9F/AlFPHMsz330OdQ6IeqKxbogPUyHpGRDjJybTIWQ4gagnDru16BYQn1fk0mu9rCYQ4yeaCm8koh4CgqRPQBcbKvtXTBfr0uUyiAkECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQU0cv7n9FP4SgCCudUT5aGCCiWr92kaIiAAlkWE78hAooueEMEFMVGKJEbIqAQthP5+/OX2zO5FQGNl7eeRkDDpa6nEdBYkS9uDiKguOKPn0ZAA2XfvE4IaIwa9TQCGqJMPY2A/FWqpxGQswK3XRcIyM9uPenGTyOgODLW0wjITbFLnzMC8lC1nkZADgrX0wjIWu162vD/tdnZ1+V0WLx6N+1LswS09nXjgTOgwPhpk2xhQ74tWn7zOpkioG0v73+6ZzRJPW2GgA7G0bGheepp5QO6KYsuo2iqelr5gO6gNDTDbdeFygHdvZz3jaKSn5XuKhuQ9WZ0q5L1tKrvA22s/Xkhj/Rx/L2i2S59zspOoF3HF3V3R5u2nlYyoCPj5/zDmzK69eGWj1hPtYCO17P781cPfnH8yetp9QJas72W942iCW/al0pdRIsremro+MX1kaOVV2cC3bF56b/Y9CAp1AlozR1redOO1uUR8yoSkMXlyH0dTFVPqxFQr83r6m/33/5yqRDQml7LOWEWx6UPyOde+sgomrOz3AHZbV63HnPOelrqgJzrOR95efBp62nF3kh0M3MxF7JOoCHjB0spA6KeOFIGtIZ6/OULiM/AQ0kWEJtXNMkCWkM9o2QKiM0roDQBsXnFlCagNdQzVo6A2LzCShAQm1dk0QOinuCiB4TgQgfE+IkvbkDUk0LcgNZQTyhBA+K+PYugAen/EAJ8BA2oXfv2MfUEFDegE6IJLnpA7X9DlBRTgoAa9QSWIyCERUCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkJgG9vn1aHBYii3XpE9DH7+cux4GnLqvGFgYJAc3C6LqiW0AX85DLoOB6XXUwgSAxDIghFIfdWvQMaDkVaSiC5Sp0vGvuPIG4n4/GtJ7mcA3EEKrt4fHpR/eDWlePI66+dLsvhElAzevZY43b+bfawq4+V7YzH56vXqsJdLJWDKPIwsbr0+6E2wbU9qYOJel257rpSTYPqLFzDWX9EvUIqNHQCD7T3SmgEzJy43Zt4BrQCRnZ8b+mHBDQV8TUxcB7kcEBITu+DwQJAUFCQJAQECQEBAkBQUJAkBAQJAQECQFBQkCQEBAkBAQJAUFCQJAQECQEBAkBQUJAkBAQJAQEyT+sd50PbCsGcQAAAABJRU5ErkJggg==">
@@ -81,7 +81,7 @@
 <body>
 
 <header>
-  <h1>Market Cycle Trader</h1>
+  <h1>CycleFX Pro</h1>
   <span class="badge" id="headerBias">—</span>
 </header>
 
@@ -89,7 +89,18 @@
 
   <!-- DASHBOARD -->
   <section class="tab active" id="tab-dashboard">
-    <div class="panel"><h3>30M Bias</h3><span class="badge" id="dashBias"></span><p class="sub" id="dashBiasReason"></p></div>
+    <div class="panel"><h3>Strategy Card</h3><p class="sub">Live rollup of bias, structure, level, and confidence</p><div id="strategyCard"></div></div>
+    <div class="panel"><h3>30M Bias</h3><span class="badge" id="dashBias"></span><p class="sub" id="dashBiasReason"></p><div id="structureFlags" style="margin-top:6px;"></div></div>
+    <div class="panel">
+      <h3>PPMCS Engine</h3><p class="sub">Infrastructure status — Pam Peter Market Cycle Strategy</p>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Current Symbol</span><span style="font-family:ui-monospace,monospace;font-size:12px;">EURUSD</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Current Timeframe</span><span style="font-family:ui-monospace,monospace;font-size:12px;">M30</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Strategy Version</span><span style="font-family:ui-monospace,monospace;font-size:10px;text-align:right;">PPMCS v0.1 (infra only — rules pending)</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Engine Status</span><span style="font-family:ui-monospace,monospace;font-size:10px;text-align:right;">Structure live · Levels 1–3 pending</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Replay Status</span><span style="font-family:ui-monospace,monospace;font-size:10px;text-align:right;">Idle (not connected to UI)</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Data Source</span><span style="font-family:ui-monospace,monospace;font-size:12px;">Manual entry</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;"><span style="font-size:11px;color:#7a8199;">Signal Status</span><span style="font-family:ui-monospace,monospace;font-size:12px;">NOT_IMPLEMENTED</span></div>
+    </div>
     <div class="panel"><h3>Level 2 Zone</h3><div id="dashZone" class="sub"></div></div>
     <div class="panel"><h3>Level 3 / Entry Status</h3><div id="dashStatus" style="display:flex;gap:8px;flex-wrap:wrap;"></div></div>
     <div class="panel">
@@ -120,6 +131,8 @@
         <div class="field"><label>Zone Top</label><input id="zoneTop" oninput="recalc()"></div>
         <div class="field"><label>Zone Bottom</label><input id="zoneBottom" oninput="recalc()"></div>
       </div>
+      <button id="suggestZoneBtn" class="btn-ghost" style="display:none;" onclick="applySuggestedZone()"></button>
+      <p class="sub">The zone is still your call — the suggestion is only a starting point.</p>
     </div>
     <div class="panel">
       <h3>Level 3 — Expansion Tracking</h3>
@@ -204,7 +217,7 @@
 <script>
 // ---------- state ----------
 const store = {
-  candles: JSON.parse(localStorage.getItem('mct_candles') || '[{},{},{},{}]'),
+  candles: JSON.parse(localStorage.getItem('mct_candles') || '[{},{},{},{},{}]'),
   zoneTop: localStorage.getItem('mct_zoneTop') || '',
   zoneBottom: localStorage.getItem('mct_zoneBottom') || '',
   currentPrice: localStorage.getItem('mct_currentPrice') || '',
@@ -246,27 +259,94 @@ function updateCandle(i,field,v){ store.candles[i][field]=v; recalc(); }
 function addCandle(){ store.candles.push({}); renderCandles(); recalc(); }
 function removeCandle(i){ store.candles.splice(i,1); renderCandles(); recalc(); }
 
-// ---------- strategy logic ----------
-function computeBias(){
-  const valid = store.candles.filter(c=>c.high && c.low);
-  if(valid.length<3) return {bias:'unclear',reason:'Enter at least 3 candles of 30M data.'};
-  const highs=valid.map(c=>+c.high), lows=valid.map(c=>+c.low);
-  let hh=true,hl=true,lh=true,ll=true;
-  for(let i=1;i<highs.length;i++){
-    if(highs[i]<=highs[i-1]) hh=false; if(lows[i]<=lows[i-1]) hl=false;
-    if(highs[i]>=highs[i-1]) lh=false; if(lows[i]>=lows[i-1]) ll=false;
+// ---------- STRATEGY ENGINE (v2) ----------
+// Ported from backend/src/strategyEngine.js — see that file's header comment
+// for the full documented engineering decisions (fractal swing method,
+// BOS vs CHoCH definitions, confidence weighting rationale, etc).
+const CONFIDENCE_WEIGHTS = { trendQuality:30, marketStructure:25, confirmationSignals:25, zoneQuality:20 };
+
+function computeSwings(candles, lookback=1){
+  const n=candles.length, swings=[];
+  for(let i=lookback;i<n-lookback;i++){
+    const c=candles[i]; let isHigh=true, isLow=true;
+    for(let k=1;k<=lookback;k++){
+      if(candles[i-k].high>=c.high||candles[i+k].high>=c.high) isHigh=false;
+      if(candles[i-k].low<=c.low||candles[i+k].low<=c.low) isLow=false;
+    }
+    if(isHigh) swings.push({index:i,type:'high',price:c.high});
+    if(isLow) swings.push({index:i,type:'low',price:c.low});
   }
-  if(hh&&hl) return {bias:'bullish',reason:'Structure shows higher highs and higher lows.'};
-  if(lh&&ll) return {bias:'bearish',reason:'Structure shows lower highs and lower lows.'};
-  return {bias:'ranging',reason:'No consistent HH/HL or LH/LL sequence yet.'};
+  return swings;
 }
-function detectLevel1(bias){
-  const valid = store.candles.filter(c=>c.high && c.low);
-  if(valid.length<2||bias==='unclear') return null;
-  const highs=valid.map(c=>+c.high), lows=valid.map(c=>+c.low);
-  if(bias==='bullish') return {from:Math.min(...lows), to:Math.max(...highs)};
-  if(bias==='bearish') return {from:Math.max(...highs), to:Math.min(...lows)};
-  return null;
+function classifyStructure(){
+  const candles = store.candles
+    .filter(c=>c.high&&c.low&&c.close)
+    .map(c=>({open:+c.open,high:+c.high,low:+c.low,close:+c.close}));
+  if(candles.length<5) return {bias:'unclear',reason:'Need at least 5 candles for swing structure (2 swing highs + 2 swing lows).',labeledSwings:[],lastBOS:null,lastCHoCH:null,latestSwingHigh:null,latestSwingLow:null};
+  const swings=computeSwings(candles,1);
+  const highs=swings.filter(s=>s.type==='high'), lows=swings.filter(s=>s.type==='low');
+  if(highs.length<2||lows.length<2) return {bias:'unclear',reason:'Not enough confirmed swing points yet — add more candles.',labeledSwings:[],lastBOS:null,lastCHoCH:null,latestSwingHigh:null,latestSwingLow:null};
+  const [h2,h1]=highs.slice(-2), [l2,l1]=lows.slice(-2);
+  const higherHigh=h1.price>h2.price, higherLow=l1.price>l2.price;
+  const lowerHigh=h1.price<h2.price, lowerLow=l1.price<l2.price;
+  let bias='ranging', reason='Mixed swing sequence — no clean HH/HL or LH/LL pattern.';
+  if(higherHigh&&higherLow){bias='bullish';reason='Most recent swings show a Higher High and a Higher Low.';}
+  else if(lowerHigh&&lowerLow){bias='bearish';reason='Most recent swings show a Lower High and a Lower Low.';}
+  const labeledSwings=[]; let prevHigh=null, prevLow=null;
+  for(const s of swings){
+    if(s.type==='high'){ labeledSwings.push({...s,label: prevHigh==null?'H': s.price>prevHigh.price?'HH': s.price<prevHigh.price?'LH':'EQ-H'}); prevHigh=s; }
+    else{ labeledSwings.push({...s,label: prevLow==null?'L': s.price>prevLow.price?'HL': s.price<prevLow.price?'LL':'EQ-L'}); prevLow=s; }
+  }
+  const lastCandle=candles[candles.length-1];
+  const priorHigh=[...highs].reverse().find(s=>s.index<candles.length-1);
+  const priorLow=[...lows].reverse().find(s=>s.index<candles.length-1);
+  let lastBOS=null, lastCHoCH=null;
+  if(bias==='bullish'&&priorHigh&&lastCandle.close>priorHigh.price) lastBOS={direction:'bullish',brokenLevel:priorHigh.price};
+  else if(bias==='bullish'&&priorLow&&lastCandle.close<priorLow.price) lastCHoCH={direction:'bearish-warning',brokenLevel:priorLow.price};
+  else if(bias==='bearish'&&priorLow&&lastCandle.close<priorLow.price) lastBOS={direction:'bearish',brokenLevel:priorLow.price};
+  else if(bias==='bearish'&&priorHigh&&lastCandle.close>priorHigh.price) lastCHoCH={direction:'bullish-warning',brokenLevel:priorHigh.price};
+  return {bias,reason,labeledSwings,lastBOS,lastCHoCH,latestSwingHigh:h1,latestSwingLow:l1};
+}
+function detectLevel1(structure){
+  const {bias,latestSwingHigh,latestSwingLow}=structure;
+  if(bias==='unclear'||bias==='ranging'||!latestSwingHigh||!latestSwingLow) return null;
+  if(bias==='bullish') return {from:latestSwingLow.price, to:latestSwingHigh.price};
+  return {from:latestSwingHigh.price, to:latestSwingLow.price};
+}
+function suggestLevel2Zone(level1){
+  if(!level1) return null;
+  const {from,to}=level1, range=Math.abs(to-from), dir=to>from?1:-1;
+  const a=to-dir*range*0.382, b=to-dir*range*0.618;
+  return {top:Math.max(a,b), bottom:Math.min(a,b)};
+}
+function zoneQualityScore(zone, level1){
+  if(!zone||!zone.top||!zone.bottom||!level1) return 0;
+  const suggested=suggestLevel2Zone(level1); if(!suggested) return 0;
+  const zoneMid=(+zone.top+ +zone.bottom)/2, suggestedMid=(suggested.top+suggested.bottom)/2;
+  const range=Math.abs(level1.to-level1.from)||1;
+  const distanceRatio=Math.abs(zoneMid-suggestedMid)/range;
+  return Math.max(0,1-distanceRatio/0.4)*CONFIDENCE_WEIGHTS.zoneQuality;
+}
+function computeConfidence(structure, zone){
+  const w=CONFIDENCE_WEIGHTS, breakdown={trendQuality:0,marketStructure:0,confirmationSignals:0,zoneQuality:0};
+  if(structure.bias==='bullish'||structure.bias==='bearish'){
+    const relevant=structure.labeledSwings.filter(s=> structure.bias==='bullish' ? (s.label==='HH'||s.label==='HL') : (s.label==='LH'||s.label==='LL'));
+    breakdown.trendQuality=Math.min(1,relevant.length/4)*w.trendQuality;
+  }
+  if(structure.lastBOS) breakdown.marketStructure=w.marketStructure;
+  else if(structure.lastCHoCH) breakdown.marketStructure=w.marketStructure*0.2;
+  const c=store.confirm, each=w.confirmationSignals/3;
+  breakdown.confirmationSignals=(c.engulfing?each:0)+(c.bos?each:0)+(c.rejection?each:0);
+  const level1=detectLevel1(structure);
+  breakdown.zoneQuality=zoneQualityScore(zone, level1);
+  const score=Math.round(breakdown.trendQuality+breakdown.marketStructure+breakdown.confirmationSignals+breakdown.zoneQuality);
+  return {score, breakdown};
+}
+function getSignalStatus(bias, es, score){
+  if(es==='invalid') return 'INVALID';
+  if(bias==='unclear'||bias==='ranging') return 'WAIT';
+  if(es==='valid'&&score>=70) return bias==='bullish'?'BUY_READY':'SELL_READY';
+  return 'WAIT';
 }
 function level3Status(bias){
   const p=+document.getElementById('currentPrice').value, t=+document.getElementById('zoneTop').value, b=+document.getElementById('zoneBottom').value;
@@ -289,16 +369,32 @@ function toggleConfirm(key){
   document.getElementById('c-'+key).querySelector('input').checked = !!store.confirm[key];
   recalc();
 }
+function applySuggestedZone(){
+  const structure = classifyStructure();
+  const level1 = detectLevel1(structure);
+  const sz = suggestLevel2Zone(level1);
+  if(!sz) return;
+  document.getElementById('zoneTop').value = sz.top.toFixed(5);
+  document.getElementById('zoneBottom').value = sz.bottom.toFixed(5);
+  recalc();
+}
+// ---- Future integration placeholders (not implemented yet) ----
+// TradingViewAdapter / MT5Bridge / AlertService / AIAnalysisService —
+// see backend/src/integrations/*.js for the documented interface stubs.
 
 // ---------- render ----------
 const biasLabel = {bullish:'BULLISH',bearish:'BEARISH',ranging:'RANGING',unclear:'NEED DATA'};
 const biasClass = {bullish:'b-bullish',bearish:'b-bearish',ranging:'b-ranging',unclear:'b-unclear'};
 
 function recalc(){
-  const {bias,reason} = computeBias();
-  const l1 = detectLevel1(bias);
+  const structure = classifyStructure();
+  const {bias,reason} = structure;
+  const l1 = detectLevel1(structure);
   const l3 = level3Status(bias);
   const es = entryStatus(l3);
+  const zt0=document.getElementById('zoneTop').value, zb0=document.getElementById('zoneBottom').value;
+  const confidence = computeConfidence(structure, {top:zt0, bottom:zb0});
+  const signal = getSignalStatus(bias, es, confidence.score);
 
   // header + dashboard bias
   [document.getElementById('headerBias'), document.getElementById('dashBias'), document.getElementById('chartBias')].forEach(el=>{
@@ -306,11 +402,46 @@ function recalc(){
   });
   document.getElementById('dashBiasReason').textContent = reason;
   document.getElementById('chartBiasReason').textContent = reason;
+  document.getElementById('structureFlags').innerHTML =
+    structure.lastBOS ? `<span style="font-size:11px;color:#26a69a;border:1px solid #26a69a66;border-radius:5px;padding:2px 8px;">BOS confirmed</span>`
+    : structure.lastCHoCH ? `<span style="font-size:11px;color:#f0b429;border:1px solid #f0b42966;border-radius:5px;padding:2px 8px;">CHoCH warning</span>` : '';
+
+  // Strategy Card
+  const sigStyles = { BUY_READY:{label:'BUY READY',color:'#26a69a'}, SELL_READY:{label:'SELL READY',color:'#ef5350'}, WAIT:{label:'WAIT',color:'#f0b429'}, INVALID:{label:'INVALID',color:'#ef5350'} };
+  const sig = sigStyles[signal] || sigStyles.WAIT;
+  const ringColor = confidence.score>=70?'#26a69a':confidence.score>=40?'#f0b429':'#ef5350';
+  const currentLevel = l3==='expansion' ? 'Level 3 — Expansion' : (zt0&&zb0) ? 'Level 2 — Decision Zone' : l1 ? 'Level 1 — Impulse' : 'Awaiting structure';
+  document.getElementById('strategyCard').innerHTML = `
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <div style="position:relative;width:64px;height:64px;flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#1d2230" stroke-width="6"/>
+          <circle cx="32" cy="32" r="26" fill="none" stroke="${ringColor}" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="${2*Math.PI*26}" stroke-dashoffset="${2*Math.PI*26 - (confidence.score/100)*2*Math.PI*26}" transform="rotate(-90 32 32)"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-weight:700;font-size:13px;color:${ringColor};">${confidence.score}</div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:#5d6472;text-transform:uppercase;">Signal</div>
+        <div style="font-size:16px;font-weight:700;color:${sig.color};">${sig.label}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+      <div class="stat" style="text-align:left;padding:8px;"><div style="font-size:9px;color:#5d6472;text-transform:uppercase;">Bias</div><div style="font-family:ui-monospace,monospace;font-size:13px;text-transform:capitalize;">${bias}</div></div>
+      <div class="stat" style="text-align:left;padding:8px;"><div style="font-size:9px;color:#5d6472;text-transform:uppercase;">Structure</div><div style="font-family:ui-monospace,monospace;font-size:13px;">${structure.lastBOS?'BOS':structure.lastCHoCH?'CHoCH':'—'}</div></div>
+      <div class="stat" style="text-align:left;padding:8px;"><div style="font-size:9px;color:#5d6472;text-transform:uppercase;">Current Level</div><div style="font-family:ui-monospace,monospace;font-size:11px;">${currentLevel}</div></div>
+      <div class="stat" style="text-align:left;padding:8px;"><div style="font-size:9px;color:#5d6472;text-transform:uppercase;">Confirmation</div><div style="font-family:ui-monospace,monospace;font-size:13px;text-transform:capitalize;">${es}</div></div>
+    </div>`;
 
   // level 1
   document.getElementById('level1Out').innerHTML = l1
     ? `From: <b style="color:#e6e9f0">${fmt(l1.from)}</b> &nbsp; To: <b style="color:#e6e9f0">${fmt(l1.to)}</b> &nbsp; Range: <b style="color:#e6e9f0">${fmt(Math.abs(l1.to-l1.from))}</b>`
     : 'Add candle data with a clear bias to detect the initial push.';
+
+  // suggest zone button
+  const sz = suggestLevel2Zone(l1);
+  document.getElementById('suggestZoneBtn').style.display = sz ? 'inline-block' : 'none';
+  if(sz) document.getElementById('suggestZoneBtn').textContent = `Suggest zone (38.2–61.8%) → ${fmt(sz.bottom)}–${fmt(sz.top)}`;
 
   // level 2 / dashboard zone
   const zt=document.getElementById('zoneTop').value, zb=document.getElementById('zoneBottom').value;
