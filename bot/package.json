@@ -1,0 +1,16 @@
+{
+  "name": "market-cycle-trader",
+  "version": "1.0.0",
+  "description": "Crash 500 auto-trader — EMA 4/10 crossover (buy only), automatic take profit after 5 one-minute candles, via the Deriv WebSocket API.",
+  "license": "MIT",
+  "private": true,
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "demo": "node src/index.js --demo",
+    "test": "node --test test/*.test.js"
+  }
+}
