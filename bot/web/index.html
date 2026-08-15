@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0e14">
+<title>Crash 500 EMA Bot — Live Dashboard</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#12151f; --border:#232838; --border2:#1d2230;
+    --text:#e6e9f0; --muted:#7a8199; --dim:#5d6472;
+    --blue:#3d8bfd; --green:#26a69a; --red:#ef5350; --amber:#f0b429;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;}
+  header{position:sticky;top:0;background:rgba(11,14,20,.95);backdrop-filter:blur(6px);border-bottom:1px solid #181c27;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:10;flex-wrap:wrap;}
+  header h1{font-size:15px;margin:0;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block;box-shadow:0 0 8px currentColor;}
+  .dot.on{background:var(--green);}
+  main{max-width:820px;margin:0 auto;padding:14px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.03em;}
+  .b-demo{color:var(--blue);border-color:#3d8bfd66;background:#3d8bfd1a;}
+  .b-dry{color:var(--amber);border-color:#f0b42966;background:#f0b4291a;}
+  .b-live{color:var(--red);border-color:#ef535066;background:#ef53501a;}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+  .panel h3{margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#cdd3e0;}
+  .panel .sub{font-size:11px;color:var(--dim);margin:0 0 10px;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .stat{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px;text-align:center;}
+  .stat .v{font-size:16px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .stat .l{font-size:9px;color:var(--dim);text-transform:uppercase;margin-top:3px;letter-spacing:.04em;}
+  .stat .v.green{color:var(--green);} .stat .v.amber{color:var(--amber);} .stat .v.red{color:var(--red);} .stat .v.blue{color:var(--blue);}
+  canvas{width:100%;display:block;background:var(--bg);border:1px solid var(--border2);border-radius:8px;}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--muted);margin-top:8px;flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .sw{width:10px;height:3px;border-radius:2px;display:inline-block;}
+  table{width:100%;border-collapse:collapse;font-size:11px;}
+  th{color:var(--dim);text-align:left;padding:6px 4px;border-bottom:1px solid var(--border2);font-weight:500;}
+  td{padding:6px 4px;border-bottom:1px solid #151926;font-family:ui-monospace,monospace;}
+  .rules{font-size:12px;line-height:1.7;color:var(--muted);}
+  .rules b{color:var(--text);}
+  .pill{display:inline-block;border:1px solid;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:.03em;}
+  .p-idle{color:var(--dim);border-color:#5d647266;background:#5d64721a;}
+  .p-trade{color:var(--green);border-color:#26a69a66;background:#26a69a1a;}
+  .p-buy{color:var(--blue);border-color:#3d8bfd66;background:#3d8bfd1a;}
+  .p-tp{color:var(--amber);border-color:#f0b42966;background:#f0b4291a;}
+  footer{font-size:10px;color:var(--dim);text-align:center;padding:6px 0 22px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span class="dot" id="connDot"></span> Crash 500 EMA Bot</h1>
+  <span class="badge" id="modeBadge">—</span>
+</header>
+
+<main>
+  <div class="panel">
+    <h3>Market snapshot</h3>
+    <div class="grid">
+      <div class="stat"><div class="v" id="sClose">—</div><div class="l">Last close</div></div>
+      <div class="stat"><div class="v green" id="sEma4">—</div><div class="l">EMA 4</div></div>
+      <div class="stat"><div class="v amber" id="sEma10">—</div><div class="l">EMA 10</div></div>
+    </div>
+    <div class="grid" style="margin-top:8px;">
+      <div class="stat"><div class="v" id="sState">—</div><div class="l">State</div></div>
+      <div class="stat"><div class="v" id="sBars">—</div><div class="l">Bars held</div></div>
+      <div class="stat"><div class="v" id="sTrades">—</div><div class="l">Trades</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Price vs EMA 4 / EMA 10</h3>
+    <p class="sub">1-minute candles · BUY on the green triangle · take profit on the amber dot</p>
+    <canvas id="chart" height="260"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:#e6e9f0;"></i>Close</span>
+      <span><i class="sw" style="background:#26a69a;"></i>EMA 4</span>
+      <span><i class="sw" style="background:#f0b429;"></i>EMA 10</span>
+      <span style="color:#3d8bfd;">▲ BUY</span>
+      <span style="color:#f0b429;">● Take profit</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Strategy rules</h3>
+    <p class="sub">What this bot does, exactly</p>
+    <div class="rules">
+      <div>1 · Market: <b>Crash 500</b> (Deriv synthetic index, <b>BUY only</b>).</div>
+      <div>2 · Timeframe: <b>1-minute candles</b>.</div>
+      <div>3 · Signal: when price <b>starts trading above</b> the <b>EMA 4</b> and <b>EMA 10</b> (previous candle close below at least one, current candle close above both) → <b>bullish → BUY</b>.</div>
+      <div>4 · Exit: <b>take profit automatically after 5 completed 1-minute candles</b>.</div>
+      <div>5 · One position at a time. It never sells short.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Recent trades</h3>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Entry time</th><th>Entry</th><th>Exit</th><th>Bars</th><th>P&L (pts)</th></tr></thead>
+        <tbody id="tradesBody"><tr><td colspan="5" style="color:#5d6472;">No completed trades yet.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>Market Cycle Trader · signals are evaluated on completed candles · not financial advice</footer>
+
+<script>
+const fmt = (n) => (n === null || n === undefined || Number.isNaN(Number(n)) ? '—' : Number(n).toFixed(5).replace(/0+$/,'').replace(/\.$/,''));
+const fmtTime = (epoch) => {
+  if (!epoch) return '—';
+  const d = new Date(epoch * 1000);
+  return d.toISOString().slice(11, 19) + 'Z';
+};
+
+let lastSignalText = '';
+
+async function poll() {
+  try {
+    const res = await fetch('/api/status', { cache: 'no-store' });
+    const s = await res.json();
+    render(s);
+  } catch {
+    document.getElementById('connDot').classList.remove('on');
+  }
+}
+
+function render(s) {
+  const conn = document.getElementById('connDot');
+  conn.classList.toggle('on', s.status === 'running');
+
+  const mode = document.getElementById('modeBadge');
+  const m = s.mode || 'dry-run';
+  mode.className = 'badge ' + (m === 'live' ? 'b-live' : m === 'demo' ? 'b-demo' : 'b-dry');
+  mode.textContent = `${s.symbol || 'CRASH500'} · ${s.contractType || 'MULTUP'} · ${m.toUpperCase()}`;
+
+  const ind = s.indicator || {};
+  const candle = ind.candle || {};
+  document.getElementById('sClose').textContent = fmt(candle.close);
+  document.getElementById('sEma4').textContent = fmt(ind.emaFast);
+  document.getElementById('sEma10').textContent = fmt(ind.emaSlow);
+
+  const inTrade = !!ind.inTrade;
+  const stateEl = document.getElementById('sState');
+  stateEl.textContent = inTrade ? 'IN TRADE' : 'IDLE';
+  stateEl.className = 'v ' + (inTrade ? 'green' : '');
+  document.getElementById('sBars').textContent = inTrade ? `${ind.barsHeld}/${(s.strategy||{}).holdBars || 5}` : '—';
+  document.getElementById('sTrades').textContent = (s.trades || []).length;
+
+  drawChart(s.recent || []);
+  renderTrades(s.trades || []);
+}
+
+function drawChart(recent) {
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 800;
+  const h = 260;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+
+  const n = recent.length;
+  if (!n) {
+    ctx.fillStyle = '#5d6472';
+    ctx.font = '12px ui-monospace, monospace';
+    ctx.fillText('Waiting for candles…', 12, 22);
+    return;
+  }
+
+  const closes = recent.map(r => r.close);
+  const ema4 = recent.map(r => r.emaFast);
+  const ema10 = recent.map(r => r.emaSlow);
+  const all = [...closes, ...ema4, ...ema10].filter(v => Number.isFinite(v));
+  let min = Math.min(...all), max = Math.max(...all);
+  if (min === max) { min -= 1; max += 1; }
+  const pad = (max - min) * 0.08 || 1;
+  min -= pad; max += pad;
+
+  const X = i => 8 + (i / (n - 1)) * (w - 16);
+  const Y = v => h - 8 - ((v - min) / (max - min)) * (h - 26);
+
+  // grid
+  ctx.strokeStyle = '#151926';
+  ctx.lineWidth = 1;
+  ctx.font = '9px ui-monospace, monospace';
+  ctx.fillStyle = '#5d6472';
+  for (let g = 0; g < 4; g++) {
+    const y = 8 + g * ((h - 26) / 3);
+    ctx.beginPath(); ctx.moveTo(8, y); ctx.lineTo(w - 8, y); ctx.stroke();
+    const val = max - (g / 3) * (max - min);
+    ctx.fillText(fmt(val), 10, y - 2);
+  }
+
+  const line = (data, color, width) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const x = X(i), y = Y(data[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  };
+
+  line(closes, '#e6e9f0', 1.4);
+  line(ema4, '#26a69a', 1.2);
+  line(ema10, '#f0b429', 1.2);
+
+  // markers
+  recent.forEach((r, i) => {
+    const x = X(i), y = Y(r.close);
+    if (r.signal === 'BUY') {
+      ctx.fillStyle = '#3d8bfd';
+      ctx.beginPath();
+      ctx.moveTo(x, y - 9);
+      ctx.lineTo(x - 5, y - 3);
+      ctx.lineTo(x + 5, y - 3);
+      ctx.closePath();
+      ctx.fill();
+    } else if (r.signal === 'TAKE_PROFIT') {
+      ctx.fillStyle = '#f0b429';
+      ctx.beginPath();
+      ctx.arc(x, y + 6, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+}
+
+function renderTrades(trades) {
+  const body = document.getElementById('tradesBody');
+  if (!trades.length) {
+    body.innerHTML = '<tr><td colspan="5" style="color:#5d6472;">No completed trades yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = trades.slice().reverse().map(t => `
+    <tr>
+      <td>${fmtTime(t.epoch)}</td>
+      <td>${fmt(t.entryPrice)}</td>
+      <td>${fmt(t.exitPrice)}</td>
+      <td>${t.barsHeld}</td>
+      <td style="color:${t.pnlPoints >= 0 ? '#26a69a' : '#ef5350'}">${t.pnlPoints >= 0 ? '+' : ''}${fmt(t.pnlPoints)}</td>
+    </tr>`).join('');
+}
+
+poll();
+setInterval(poll, 700);
+</script>
+</body>
+</html>
