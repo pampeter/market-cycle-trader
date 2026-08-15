@@ -137,6 +137,22 @@ This is the default and the safest way to validate the bot.
 
 ---
 
+### Verify your Deriv connection first
+
+```bash
+cd bot
+node src/index.js --selftest
+```
+
+This connects to Deriv, authorizes with your token (if set), prints your
+balance, and shows the 5 most recent `CRASH500` 1-minute candles — so you can
+confirm connectivity, credentials, and market data in one command before
+switching anything on.
+
+> **Note:** the bot must run on a machine with normal internet access (your
+> computer, a VPS, etc.). Sandboxed/CI environments with a restricted network
+> egress will not be able to reach `ws.derivws.com`.
+---
 ## Tests
 
 ```bash

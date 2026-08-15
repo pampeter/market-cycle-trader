@@ -4,6 +4,7 @@ const { buildConfig, validateConfig } = require('./config');
 const { createLogger } = require('./logger');
 const { Trader } = require('./trader');
 const { runDemo } = require('./demo');
+const { runSelfTest } = require('./selftest');
 const { StatusServer } = require('./server');
 
 const HELP = `
@@ -16,6 +17,7 @@ ${''}5 completed 1-minute candles.
 Usage:
   node src/index.js            # dry-run (default) — live signals, no real orders
   node src/index.js --demo     # synthetic candle demo (no API/network needed)
+  node src/index.js --selftest # connect to Deriv, verify token + live candles
   node src/index.js --live     # real orders (requires API_TOKEN + LIVE_TRADING)
   node src/index.js --port 8080
 
@@ -27,11 +29,12 @@ money you cannot afford to lose.
 `;
 
 function parseArgs(argv) {
-  const args = { demo: false, live: false, port: null };
+  const args = { demo: false, live: false, port: null, selftest: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--demo') args.demo = true;
     else if (a === '--live') args.live = true;
+    else if (a === '--selftest') args.selftest = true;
     else if (a === '--port' && argv[i + 1]) args.port = argv[++i];
     else if (a === '--help' || a === '-h') args.help = true;
   }
@@ -55,6 +58,19 @@ async function main() {
   }
 
   banner(log, config);
+
+  // One-shot connectivity self-test (verify Deriv + token + live candles).
+  if (args.selftest) {
+    try {
+      await runSelfTest({ config, log });
+      log.ok('SELF-TEST PASSED — you can now run live market data with: npm start');
+      process.exit(0);
+    } catch (err) {
+      log.err(`SELF-TEST FAILED: ${err.message}`);
+      log.warn('Check your internet connection, APP_ID, and API token, then retry.');
+      process.exit(1);
+    }
+  }
 
   let state = { status: 'starting', mode: config.MODE, symbol: config.SYMBOL };
   const server = new StatusServer({ port: config.PORT, getState: () => state, log });
