@@ -34,7 +34,7 @@ market-cycle-trader/
 │   ├── .env.example
 │   └── package.json
 ├── index.html                ← existing "CycleFX Pro" manual strategy workbook (unchanged)
-└── bot/test/                 ← unit tests (node --test)
+└── deploy/gcp/               ← Google Cloud 24/7 deployment (startup script, systemd, guide)
 ```
 
 ---
@@ -111,6 +111,25 @@ switching anything on.
    ```
 
 **Start with a Deriv demo account** and a tiny stake before considering real funds.
+
+---
+
+## Deploy to Google Cloud (24/7)
+
+Run the bot on a Google Cloud VM so it keeps watching the live market around
+the clock. A turnkey startup script provisions the VM (Node 22, this repo, and
+a `systemd` service that auto-restarts the bot) automatically.
+
+👉 Full step-by-step guide: **[deploy/gcp/README.md](deploy/gcp/README.md)**
+
+```bash
+# CLI option (run on YOUR machine, where gcloud is installed + logged in):
+ZONE=us-central1-a ./deploy/gcp/gcloud.sh
+```
+
+> **You must create the Google Cloud account yourself** (it needs your email,
+> payment method, and phone verification). The free-tier `e2-micro` VM costs
+> $0/month in supported regions — see https://cloud.google.com/free.
 
 ---
 

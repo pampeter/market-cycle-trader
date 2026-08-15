@@ -1,0 +1,16 @@
+[Unit]
+Description=Market Cycle Trader — Crash 500 EMA bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mct
+WorkingDirectory=/opt/market-cycle-trader/bot
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node src/index.js --port 3000
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
