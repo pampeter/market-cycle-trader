@@ -199,20 +199,24 @@ class FakeDerivServer:
         return body
 
 
-async def _main(port: int, tick_interval: float, win: float):
-    srv = FakeDerivServer(tick_interval=tick_interval, win_probability=win, seed=None)
-    url = await srv.start("0.0.0.0", port)
-    print(f"Fake Deriv server listening on {url}  (Ctrl+C to stop)")
+async def _main(a):
+    srv = FakeDerivServer(tick_interval=a.tick_interval, win_probability=a.win, seed=None,
+                          is_virtual=not a.real, drop_after_ticks=a.drop_after)
+    url = await srv.start(a.host, a.port)
+    print(f"Fake Deriv server listening on {url}  (Ctrl+C to stop)", flush=True)
     await asyncio.Future()
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--host", default="0.0.0.0")
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--tick-interval", type=float, default=1.0)
     ap.add_argument("--win", type=float, default=0.55, help="win probability for live contracts")
+    ap.add_argument("--real", action="store_true", help="pretend the token is a real-money account")
+    ap.add_argument("--drop-after", type=int, default=None, help="drop the first connection after N ticks")
     a = ap.parse_args()
     try:
-        asyncio.run(_main(a.port, a.tick_interval, a.win))
+        asyncio.run(_main(a))
     except KeyboardInterrupt:
         pass

@@ -129,7 +129,7 @@ async def test_reconnects_after_drop(tmp_path, monkeypatch):
     srv = FakeDerivServer(tick_interval=0.005, win_probability=0.75, drop_after_ticks=40)
     url = await srv.start()
     try:
-        cfg = make_cfg(url, tmp_path)
+        cfg = make_cfg(url, tmp_path, profit_target=6.0)
         bot = AIDerivRiseFallBot(cfg)
         monkeypatch.setattr(bot, "_backoff", lambda attempt: 0.05)
         reason = await asyncio.wait_for(bot.run(), timeout=30)

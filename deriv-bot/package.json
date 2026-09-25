@@ -1,0 +1,10 @@
+{
+  "name": "deriv-ai-bot-app",
+  "private": true,
+  "type": "module",
+  "description": "Installable phone web app (PWA) version of the Deriv AI Rise & Fall bot",
+  "scripts": {
+    "test": "node --test tests/engine.test.mjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}

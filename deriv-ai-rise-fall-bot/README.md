@@ -3,6 +3,8 @@
 An automated **Rise/Fall (CALL/PUT)** trader for [Deriv](https://deriv.com) Volatility Indices.
 It connects to your Deriv account through the official WebSocket API. A machine-learning model trained on the latest ticks picks candidate trades, and an optional **Groq LLM** filters them. The bot **stops automatically once it reaches your daily profit target**, or when any risk limit is hit.
 
+> 📱 Want it on your phone? See the installable app version in [`../deriv-bot`](../deriv-bot/README.md).
+
 > ⚠️ **Please read the [risk warning](#-risk-warning-read-this) first.** The bot starts in **paper-trading mode** and never places a real order until you change that yourself.
 
 ---
