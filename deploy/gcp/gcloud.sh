@@ -14,8 +14,12 @@
 # Usage:
 #   ZONE=us-central1-a ./deploy/gcp/gcloud.sh
 #
-# Optional (to go live immediately — handle with care):
-#   API_TOKEN=xxxx LIVE_TRADING=true ZONE=us-central1-a ./deploy/gcp/gcloud.sh
+# The VM comes up in DRY-RUN with no credentials, and the dashboard stays
+# private (SSH tunnel). To connect Deriv later, edit bot/.env on the VM:
+#   gcloud compute ssh crash500-bot --zone=us-central1-a -- -t \
+#     'sudo -u mct nano /opt/market-cycle-trader/bot/.env'
+# Never pass the token as a CLI argument or as GCE instance metadata — both
+# are readable by others, land in shell history, and outlive the VM.
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
@@ -35,7 +39,7 @@ echo "Deploying '$NAME' in project '$PROJECT' zone '$ZONE'…"
 # Ensure the Compute Engine API is enabled.
 gcloud services enable compute.googleapis.com
 
-# Startup script from the repo (substitute optional token/live values).
+# Startup script from the repo (it writes bot/.env itself, in dry-run).
 STARTUP="$(cat "$(dirname "$0")/startup-script.sh")"
 
 gcloud compute instances create "$NAME" \
@@ -44,21 +48,26 @@ gcloud compute instances create "$NAME" \
   --image="$IMAGE" \
   --boot-disk-size=10GB \
   --metadata=startup-script="$STARTUP" \
-  ${API_TOKEN:+--metadata=api-token="$API_TOKEN"} \
-  ${LIVE_TRADING:+--metadata=live-trading="$LIVE_TRADING"} \
-  --tags=http-server
+  --no-service-account --no-scopes
 
-# Allow the dashboard on port 3000 (optional — remove to keep it private and
-# use an SSH tunnel instead).
-gcloud compute firewall-rules create allow-mct-dashboard \
-  --allow tcp:3000 --target-tags=http-server --quiet 2>/dev/null \
-  || echo "Firewall rule may already exist — skipping."
-
-EXTERNAL_IP="$(gcloud compute instances describe "$NAME" --zone="$ZONE" --format='value(networkInterfaces[0].accessConfigs[0].natIP)')"
+# Two deliberate differences from the earlier version of this script:
+#   1. No `--tags=http-server` and no `allow-mct-dashboard` firewall rule.
+#      The dashboard has no login, so it is reachable only through an SSH
+#      tunnel:  gcloud compute ssh $NAME --zone=$ZONE -- -L 3000:localhost:3000
+#      bot/.env also binds it to 127.0.0.1, so a stray firewall rule alone
+#      cannot expose it either.
+#   2. `--no-service-account --no-scopes` (above): the bot needs no GCP APIs, so
+#      the VM is given no cloud credentials at all. If this box is ever
+#      compromised there is no service-account token to steal, and no
+#      instance-metadata secret to read — which is also why the Deriv token is
+#      written to bot/.env over SSH rather than passed in as metadata.
 
 echo
 echo "✅ VM '$NAME' created and provisioning (this can take ~2 minutes)."
-echo "   SSH in and watch it start:"
+echo "   Watch it start:"
 echo "     gcloud compute ssh $NAME --zone=$ZONE"
 echo "     sudo journalctl -u market-cycle-trader -f"
-echo "   Dashboard (if firewall opened): http://$EXTERNAL_IP:3000"
+echo "   Dashboard — tunnel it, then open http://localhost:3000 :"
+echo "     gcloud compute ssh $NAME --zone=$ZONE -- -L 3000:localhost:3000"
+echo "   Verify it can reach Deriv (real candles, still no orders):"
+echo "     gcloud compute ssh $NAME --zone=$ZONE -- -t 'cd /opt/market-cycle-trader/bot && sudo -u mct node src/index.js --selftest'"

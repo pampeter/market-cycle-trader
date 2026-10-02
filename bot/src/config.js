@@ -19,6 +19,7 @@ const DEFAULTS = {
   DURATION_UNIT: 'd',
   SEED_CANDLES: 60,
   PORT: 3000,
+  HOST: '127.0.0.1', // loopback only — use an SSH tunnel; see deploy/gcp/README.md
   LIVE_TRADING: 'false',
   API_TOKEN: '',
 };
@@ -78,6 +79,7 @@ function buildConfig(options = {}) {
     DURATION_UNIT: String(merged.DURATION_UNIT || DEFAULTS.DURATION_UNIT),
     SEED_CANDLES: Number(merged.SEED_CANDLES || DEFAULTS.SEED_CANDLES),
     PORT: Number(options.port || merged.PORT || DEFAULTS.PORT),
+    HOST: String(merged.HOST || DEFAULTS.HOST).trim(),
     DRY_RUN: mode !== 'live',
     API_TOKEN: String(merged.API_TOKEN || ''),
   };

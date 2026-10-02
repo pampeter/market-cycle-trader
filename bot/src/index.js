@@ -73,7 +73,7 @@ async function main() {
   }
 
   let state = { status: 'starting', mode: config.MODE, symbol: config.SYMBOL };
-  const server = new StatusServer({ port: config.PORT, getState: () => state, log });
+  const server = new StatusServer({ port: config.PORT, host: config.HOST, getState: () => state, log });
 
   try {
     await server.start();

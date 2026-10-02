@@ -7,10 +7,13 @@ const path = require('path');
 /**
  * Tiny status server: serves the dashboard (bot/web/index.html) and a JSON
  * status endpoint (/api/status) that the dashboard polls.
- * Binds to 0.0.0.0 so it can be previewed from the browser.
+ *
+ * Bind defaults to loopback (127.0.0.1): the dashboard has **no login**, so on a
+ * server you reach it through an SSH tunnel rather than exposing the port.
+ * Override with `HOST` only if you have firewalled the port to trusted IPs.
  */
 class StatusServer {
-  constructor({ port, host = '0.0.0.0', getState, log }) {
+  constructor({ port, host = '127.0.0.1', getState, log }) {
     this.port = port;
     this.host = host;
     this.getState = getState;
@@ -26,7 +29,6 @@ class StatusServer {
       res.writeHead(200, {
         'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'no-store',
-        'Access-Control-Allow-Origin': '*',
       });
       res.end(body);
       return;
@@ -53,6 +55,13 @@ class StatusServer {
       this.server.once('error', reject);
       this.server.listen(this.port, this.host, () => {
         this.log?.info(`Dashboard listening on http://localhost:${this.port}`);
+        if (this.host === '0.0.0.0' || this.host === '::') {
+          this.log?.warn(
+            'Dashboard is bound to ALL interfaces and has no login. ' +
+            'Anyone who can reach this port can read your bot state. ' +
+            'Prefer HOST=127.0.0.1 with an SSH tunnel (-L 3000:localhost:3000).'
+          );
+        }
         resolve();
       });
     });

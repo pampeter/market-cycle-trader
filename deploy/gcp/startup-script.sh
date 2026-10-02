@@ -7,9 +7,13 @@
 # boot it will:
 #   1. Install Node.js 22 (required — the bot uses the built-in WebSocket)
 #   2. Create a locked-down `mct` user
-#   3. Clone this repository (arena branch) into /opt/market-cycle-trader
-#   4. Write /opt/.../bot/.env (pulling API token / live flag from instance
-#      metadata if you provided them)
+#   3. Clone this repository (main by default; override with the `bot-branch`
+#      instance metadata attribute) into /opt/market-cycle-trader
+#   4. Write /opt/.../bot/.env in DRY-RUN mode.
+#      The Deriv API token is deliberately NOT read from instance metadata —
+#      GCE metadata is plaintext: readable by any process on the box, by
+#      `gcloud compute instances describe`, and by anyone with read access to
+#      the project. Set the token over SSH afterwards instead.
 #   5. Install & start a systemd service that keeps the bot running 24/7
 #
 # The bot starts in DRY-RUN by default (real Crash 500 candles, no orders).
@@ -20,10 +24,15 @@ set -euo pipefail
 exec > >(tee -a /var/log/market-cycle-trader-setup.log) 2>&1
 
 APP_DIR=/opt/market-cycle-trader
-BRANCH=arena/01a002ba-market-cycle-trader
 REPO_URL=https://github.com/pampeter/market-cycle-trader.git
 BOT_USER=mct
 METADATA_URL="http://metadata.google.internal/computeMetadata/v1/instance/attributes"
+
+# Run main by default. Do not point this at a throwaway session/feature branch:
+# step 3 does `git reset --hard origin/$BRANCH` on every boot, so a deleted or
+# force-pushed branch silently changes (or kills) what your bot trades.
+BRANCH="$(curl -s -H 'Metadata-Flavor: Google' "$METADATA_URL/bot-branch" 2>/dev/null | tr -d '[:space:]')"
+BRANCH="${BRANCH:-main}"
 
 echo "[setup] start $(date -u)"
 
@@ -60,11 +69,9 @@ else
   git -C "$APP_DIR" reset --hard "origin/$BRANCH" || true
 fi
 
-# 4. Optional values from instance metadata ----------------------------------
-API_TOKEN_ATTR="$(curl -s -H 'Metadata-Flavor: Google' "$METADATA_URL/api-token" 2>/dev/null || true)"
-LIVE_ATTR="$(curl -s -H 'Metadata-Flavor: Google' "$METADATA_URL/live-trading" 2>/dev/null || true)"
+# 4. Credentials are intentionally NOT read from instance metadata.
 
-# 5. Write .env (dry-run by default) ----------------------------------------
+# 5. Write .env (dry-run by default, dashboard on loopback) -----------------
 cat > "$APP_DIR/bot/.env" <<EOF
 APP_ID=1089
 ENDPOINT=wss://ws.derivws.com/websockets/v3
@@ -81,8 +88,9 @@ DURATION=1
 DURATION_UNIT=d
 SEED_CANDLES=60
 PORT=3000
-API_TOKEN=${API_TOKEN_ATTR}
-LIVE_TRADING=${LIVE_ATTR:-false}
+HOST=127.0.0.1
+API_TOKEN=
+LIVE_TRADING=false
 EOF
 chown "$BOT_USER:$BOT_USER" "$APP_DIR/bot/.env"
 chmod 600 "$APP_DIR/bot/.env"
@@ -97,4 +105,9 @@ systemctl restart market-cycle-trader.service
 chown -R "$BOT_USER:$BOT_USER" "$APP_DIR"
 
 echo "[setup] done $(date -u)"
-echo "[setup] watch logs with: journalctl -u market-cycle-trader -f"
+echo "[setup] logs:            sudo journalctl -u market-cycle-trader -f"
+echo "[setup] dashboard:       gcloud compute ssh <instance> --zone=<zone> -- -L 3000:localhost:3000"
+echo "[setup]                    then open http://localhost:3000"
+echo "[setup] connect Deriv:   sudo -u mct nano $APP_DIR/bot/.env"
+echo "[setup]                    set API_TOKEN=... (and LIVE_TRADING=true only"
+echo "[setup]                    when you mean it), then: sudo systemctl restart market-cycle-trader"
