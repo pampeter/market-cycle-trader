@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0e14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="AI-powered Rise & Fall auto-trader for Deriv with profit-target auto-stop">
+<title>Deriv AI Bot</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="icons/icon-192.png" alt="" width="28" height="28">
+    <div>
+      <h1>Deriv AI Bot</h1>
+      <div class="sub">Rise &amp; Fall · <span id="hdrSymbol">R_75</span></div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span id="modeBadge" class="badge b-paper">PAPER</span>
+    <span id="statusPill" class="pill"><i></i><span>Idle</span></span>
+  </div>
+</header>
+
+<main>
+  <!-- ================================================= DASHBOARD -->
+  <section id="tab-dash" class="tab active">
+    <div id="installCard" class="panel install hidden">
+      <div><b>Install as an app</b><div class="muted">Adds Deriv AI Bot to your home screen.</div></div>
+      <button id="installBtn" class="btn small primary">Install</button>
+    </div>
+
+    <div id="setupCard" class="panel notice hidden">
+      <b>Paper mode, no account connected</b>
+      <p class="muted">The bot simulates trades on live Deriv prices. To connect your Deriv account, add your API token in <a href="#" data-goto="settings">Settings</a>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="row between">
+        <h3>Account</h3>
+        <span id="acctType" class="badge b-muted">Not connected</span>
+      </div>
+      <div class="grid2 mt">
+        <div class="stat"><div class="k">Login ID</div><div class="v" id="acctLogin">—</div></div>
+        <div class="stat"><div class="k" id="balLabel">Balance</div><div class="v" id="acctBalance">—</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="row between"><h3>Today's P/L</h3><span class="muted small" id="dayDate"></span></div>
+      <div class="pnl" id="dayPnl">0.00</div>
+      <div class="bar2">
+        <div class="half left"><div id="lossFill"></div></div>
+        <div class="half right"><div id="targetFill"></div></div>
+      </div>
+      <div class="row between small muted"><span id="lossLabel">-15.00 limit</span><span id="targetLabel">+25.00 target</span></div>
+      <div class="grid4 mt">
+        <div class="stat"><div class="k">Trades</div><div class="v" id="stTrades">0</div></div>
+        <div class="stat"><div class="k">W / L</div><div class="v" id="stWL">0/0</div></div>
+        <div class="stat"><div class="k">Win rate</div><div class="v" id="stWin">—</div></div>
+        <div class="stat"><div class="k">Session</div><div class="v" id="stSession">0.00</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="row between">
+        <h3 id="mktTitle">R_75</h3>
+        <div class="price" id="price">—</div>
+      </div>
+      <canvas id="spark" height="110"></canvas>
+    </div>
+
+    <div id="posCard" class="panel pos hidden">
+      <div class="row between"><h3>Open trade</h3><span id="posMode" class="badge b-paper">PAPER</span></div>
+      <div class="row between mt">
+        <div id="posDir" class="dir">RISE ▲</div>
+        <div class="right-txt"><div id="posStake" class="v">1.00 → 1.95</div><div class="muted small">stake → payout</div></div>
+      </div>
+      <div class="row between small mt"><span>Entry <b id="posEntry">waiting…</b></span><span>Now <b id="posNow">—</b></span></div>
+      <div id="posTicks" class="ticks mt"></div>
+    </div>
+
+    <div class="panel">
+      <h3>AI analysis</h3>
+      <div class="ai-row mt">
+        <div class="ai-lbl">ML</div>
+        <div class="ai-main">
+          <div class="row between"><b id="mlDir">—</b><span id="mlProb" class="mono">—</span></div>
+          <div class="probbar"><div id="mlFill"></div><span class="thr" id="mlThr"></span></div>
+          <div class="muted small" id="mlAcc">holdout accuracy —</div>
+        </div>
+      </div>
+      <div class="ai-row mt">
+        <div class="ai-lbl">LLM</div>
+        <div class="ai-main">
+          <div class="row between"><b id="llmDir">—</b><span id="llmConf" class="mono">—</span></div>
+          <div class="muted small" id="llmReason">Waiting for a strong ML signal</div>
+        </div>
+      </div>
+      <div class="note" id="aiNote">Press Start to begin</div>
+    </div>
+
+    <div class="panel">
+      <div class="row between"><h3>Activity</h3><button class="btn tiny ghost" id="clearLog">Clear</button></div>
+      <ul id="log" class="log"></ul>
+    </div>
+  </section>
+
+  <!-- ================================================= TRADES -->
+  <section id="tab-trades" class="tab">
+    <div class="panel">
+      <div class="row between"><h3>Trade history</h3><span class="muted small" id="histCount">0 trades</span></div>
+      <div class="grid3 mt">
+        <div class="stat"><div class="k">Total P/L</div><div class="v" id="histPnl">0.00</div></div>
+        <div class="stat"><div class="k">Win rate</div><div class="v" id="histWin">—</div></div>
+        <div class="stat"><div class="k">Trades</div><div class="v" id="histN">0</div></div>
+      </div>
+      <div class="row gap mt">
+        <select id="histFilter"><option value="all">All modes</option><option value="paper">Paper only</option><option value="live">Live only</option></select>
+        <button class="btn small" id="exportCsv">Export CSV</button>
+        <button class="btn small danger-ghost" id="clearHist">Clear</button>
+      </div>
+    </div>
+    <div id="histList"></div>
+  </section>
+
+  <!-- ================================================= SETTINGS -->
+  <section id="tab-settings" class="tab">
+    <form id="settingsForm" autocomplete="off" onsubmit="return false">
+      <fieldset id="settingsFs">
+        <div id="runningNote" class="panel notice hidden"><b>Stop the bot to change settings.</b></div>
+
+        <div class="panel">
+          <h3>Deriv account</h3>
+          <p class="sub">On Deriv, open <b>Account Settings → API token</b> and create a token with <b>Read</b> + <b>Trade</b>. Start with your <b>Demo</b> account.
+            <a href="https://app.deriv.com/account/api-token" target="_blank" rel="noopener">Open Deriv →</a></p>
+          <div class="field">
+            <label for="token">API token</label>
+            <div class="pw"><input id="token" type="password" placeholder="paste your Deriv API token" spellcheck="false"><button type="button" class="eye" data-eye="token">👁</button></div>
+          </div>
+          <div class="row gap">
+            <button type="button" class="btn small primary" id="testBtn">Test connection</button>
+            <span class="muted small">Saved only on this phone.</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Trading</h3>
+          <div class="field">
+            <label>Mode</label>
+            <div class="seg" id="modeSeg">
+              <button type="button" data-mode="paper" class="on">📝 Paper (simulated)</button>
+              <button type="button" data-mode="live">💸 Live (real orders)</button>
+            </div>
+          </div>
+          <label class="check hidden" id="allowRealWrap"><input type="checkbox" id="allowReal"> Allow a <b>real-money</b> account (otherwise live mode only trades Demo accounts)</label>
+          <div class="grid2">
+            <div class="field"><label for="symbol">Market</label>
+              <select id="symbol">
+                <option>R_10</option><option>R_25</option><option>R_50</option><option selected>R_75</option><option>R_100</option>
+                <option>1HZ10V</option><option>1HZ25V</option><option>1HZ50V</option><option>1HZ75V</option><option>1HZ100V</option>
+              </select></div>
+            <div class="field"><label for="stake">Stake</label><input id="stake" type="number" inputmode="decimal" step="0.01" min="0.35"></div>
+            <div class="field"><label for="duration">Duration (ticks)</label><input id="duration" type="number" inputmode="numeric" min="1" max="10"></div>
+            <div class="field"><label for="paperStartBalance">Paper balance</label><input id="paperStartBalance" type="number" inputmode="decimal"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Profit target &amp; risk</h3>
+          <div class="grid2">
+            <div class="field"><label for="profitTarget">Profit target (auto-stop)</label><input id="profitTarget" type="number" inputmode="decimal" step="0.01"></div>
+            <div class="field"><label for="maxDailyLoss">Max daily loss</label><input id="maxDailyLoss" type="number" inputmode="decimal" step="0.01"></div>
+            <div class="field"><label for="maxTrades">Max trades / day</label><input id="maxTrades" type="number" inputmode="numeric"></div>
+            <div class="field"><label for="maxConsecLosses">Stop after losses in a row</label><input id="maxConsecLosses" type="number" inputmode="numeric"></div>
+            <div class="field"><label for="cooldown">Cooldown (seconds)</label><input id="cooldown" type="number" inputmode="numeric"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>AI engine</h3>
+          <div class="grid2">
+            <div class="field"><label for="minMlProbPct">Min ML probability %</label><input id="minMlProbPct" type="number" inputmode="numeric" min="50" max="99"></div>
+            <div class="field"><label for="trainWindow">Train window (ticks)</label><input id="trainWindow" type="number" inputmode="numeric" min="40"></div>
+          </div>
+          <label class="check"><input type="checkbox" id="useLlm"> Use Groq LLM as a second opinion</label>
+          <div id="llmFields">
+            <p class="sub">Free key: <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>. Without a key the bot runs ML-only.</p>
+            <div class="field">
+              <label for="groqKey">Groq API key</label>
+              <div class="pw"><input id="groqKey" type="password" placeholder="gsk_…" spellcheck="false"><button type="button" class="eye" data-eye="groqKey">👁</button></div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="groqModel">Model</label>
+                <input id="groqModel" list="models" spellcheck="false">
+                <datalist id="models"><option value="openai/gpt-oss-120b"><option value="openai/gpt-oss-20b"><option value="llama-3.3-70b-versatile"><option value="llama-3.1-8b-instant"></datalist></div>
+              <div class="field"><label for="minAiConf">Min LLM confidence</label><input id="minAiConf" type="number" inputmode="numeric" min="0" max="100"></div>
+            </div>
+            <label class="check"><input type="checkbox" id="requireAgreement"> ML and LLM must agree on direction</label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>App</h3>
+          <label class="check"><input type="checkbox" id="keepAwake"> Keep screen on while the bot runs</label>
+          <label class="check"><input type="checkbox" id="vibrate"> Vibrate on each trade result</label>
+          <details class="mt">
+            <summary class="muted">Advanced</summary>
+            <div class="field mt"><label for="appId">Deriv app_id</label><input id="appId" inputmode="numeric"></div>
+            <div class="field"><label for="wsUrl">WebSocket URL</label><input id="wsUrl" spellcheck="false"></div>
+          </details>
+        </div>
+
+        <div class="panel">
+          <h3>Danger zone</h3>
+          <div class="row gap wrap">
+            <button type="button" class="btn small danger-ghost" id="resetDay">Reset today's counters</button>
+            <button type="button" class="btn small danger-ghost" id="forgetKeys">Forget my keys</button>
+            <button type="button" class="btn small ghost" id="showRisk">Risk warning</button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+    <p class="footer muted small">Deriv AI Bot v1.0 · runs entirely on your phone · keys never leave this device except to Deriv / Groq</p>
+  </section>
+</main>
+
+<div class="actionbar">
+  <button id="startBtn" class="btn big start">▶ Start bot</button>
+</div>
+
+<nav>
+  <button data-tab="dash" class="active"><span>📊</span>Dashboard</button>
+  <button data-tab="trades"><span>🧾</span>Trades</button>
+  <button data-tab="settings"><span>⚙️</span>Settings</button>
+</nav>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="sheet">
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+    <div id="modalBtns" class="row gap end mt"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

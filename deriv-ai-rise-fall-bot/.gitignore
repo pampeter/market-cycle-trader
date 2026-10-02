@@ -1,0 +1,15 @@
+# Secrets - never commit your real .env
+.env
+*.env
+!.env.example
+
+# Bot runtime data (daily P/L state, trade log)
+state/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
