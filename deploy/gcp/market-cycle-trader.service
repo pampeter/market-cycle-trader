@@ -1,0 +1,50 @@
+[Unit]
+Description=Market Cycle Trader — Crash 500 EMA bot
+After=network-online.target
+Wants=network-online.target
+# Keep retrying forever after a crash loop (e.g. a Deriv outage or a DNS blip).
+# The default rate limit (5 starts / 10s) would leave the service in `failed`
+# and silently stop trading until you notice. Comment these two lines out if
+# you would rather it stay down for you to inspect after repeated failures.
+StartLimitIntervalSec=0
+StartLimitBurst=0
+
+[Service]
+Type=simple
+User=mct
+Group=mct
+WorkingDirectory=/opt/market-cycle-trader/bot
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node src/index.js --port 3000
+Restart=always
+RestartSec=10
+TimeoutStopSec=20
+
+# --- sandboxing -------------------------------------------------------------
+# bot/src/ never writes to disk and reads only its own directory, so the whole
+# filesystem can be read-only for this process. If you add file logging later,
+# add: ReadWritePaths=/opt/market-cycle-trader/bot
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+NoNewPrivileges=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+SystemCallArchitectures=native
+# Outbound WebSocket (Deriv) + local dashboard only.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+# e2-micro has ~1 GB; this bot is far under it. Caps a runaway loop.
+MemoryMax=512M
+TasksMax=256
+# NOTE: do not set MemoryDenyWriteExecute=true — V8's JIT needs writable
+# executable memory and Node will fail to start.
+
+[Install]
+WantedBy=multi-user.target
